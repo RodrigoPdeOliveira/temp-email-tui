@@ -104,7 +104,9 @@ class Interface():
 
         try:
             id = self.__email._mailbox[int(res)]['id']
-        except IndexError or TypeError:
+        except IndexError:
+            self.mailbox()
+        except ValueError:
             self.mailbox()
 
         message = self.__email._fetch_message(id)
