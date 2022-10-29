@@ -10,17 +10,35 @@ class Email:
         self._mailbox = self._update_mailbox()
 
     def __generate_email(self) -> list:
+        """Generates a new random e-mail address
+
+        Returns:
+            list: A list with the generated e-mail address
+        """
         url: str = "https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1"
         r: list = requests.get(url).json()
         return r
 
     def _update_mailbox(self) -> list[dict]:
+        """Updates the mailbox with received mail
+
+        Returns:
+            list[dict]: List with mails as Json objects
+        """
         login, domain = self._address.split("@")
         url: str = f"https://www.1secmail.com/api/v1/?action=getMessages&login={login}&domain={domain}"
         r: list[dict] = requests.get(url).json()
         return r
 
     def _fetch_message(self, id: int) -> dict:
+        """Gets a mail by its ID
+
+        Args:
+            id (int): ID of the desired mail
+
+        Returns:
+            dict: Mail as a Json object
+        """
         login, domain = self._address.split("@")
         url: str = f"https://www.1secmail.com/api/v1/?action=readMessage&login={login}&domain={domain}&id={id}"
         r: dict = requests.get(url).json()
@@ -34,6 +52,8 @@ class Interface():
         self.__response = {}
 
     def main_menu(self):
+        """Draws the main menu
+        """
         self.__response = {"1": self.mailbox, "2": self.new_address, "q": exit, "Q": exit}
 
         clear()
@@ -62,6 +82,7 @@ class Interface():
             selected()
 
     def mailbox(self):
+        """Draws the mailbox"""
         self.__response = {"1": self.mailbox, "2": self.open_message, "q": exit, "Q": exit, "0": self.main_menu}
         self.__email._mailbox = self.__email._update_mailbox()
 
@@ -96,10 +117,14 @@ class Interface():
             selected()
 
     def new_address(self):
+        """Requests a new e-mail address
+        """
         self.__email = Email()
         self.main_menu()
 
     def open_message(self):
+        """Gets a mail then draws its content
+        """
         res = input('Type the number shown before the desired message >> ')
 
         try:
@@ -126,6 +151,8 @@ class Interface():
 
 
 def clear():
+    """Clears the terminal
+    """
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
